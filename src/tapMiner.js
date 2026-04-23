@@ -42,7 +42,7 @@ export class TapMiner {
     const latestTap = this.tapWindow[this.tapWindow.length - 1]
     const previousBlock = this.getLatestBlockHash()
     
-    const tapEntropy = this.buildTapEntropy()
+    const tapEntropy = await this.buildTapEntropy()
     
     let nonce = 0
     const maxNonces = 10000
@@ -88,7 +88,7 @@ export class TapMiner {
     return false
   }
 
-  buildTapEntropy() {
+  async buildTapEntropy() {
     const recentTaps = this.tapWindow.slice(-5)
     
     const entropyData = {
@@ -111,7 +111,14 @@ export class TapMiner {
       }
     }
     
-    return this.sha256(JSON.stringify(entropyData))
+    return await this.sha256(JSON.stringify(entropyData))
+  }
+
+  async sha256(message) {
+    const msgBuffer = new TextEncoder().encode(message)
+    const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer)
+    const hashArray = Array.from(new Uint8Array(hashBuffer))
+    return hashArray.map(b => b.toString(16).padStart(2, '0')).join('')
   }
 
   calculateVariance(values) {

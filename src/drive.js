@@ -96,7 +96,12 @@ export class DriveStorage {
     // Try local storage first
     const localData = localStorage.getItem('tapmine-drive-backup')
     if (localData) {
-      return JSON.parse(localData)
+      try {
+        return JSON.parse(localData)
+      } catch (e) {
+        console.error("Failed to parse drive backup", e)
+        localStorage.removeItem('tapmine-drive-backup')
+      }
     }
     
     // In production, would load from Drive:

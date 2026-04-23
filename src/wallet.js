@@ -217,14 +217,14 @@ export class WalletManager {
     console.log('Sending transaction:', signedTx)
     
     return {
-      hash: this.generateTxHash(signedTx),
+      hash: await this.generateTxHash(signedTx),
       ...signedTx
     }
   }
 
-  generateTxHash(tx) {
+  async generateTxHash(tx) {
     const data = JSON.stringify(tx)
-    return this.sha256(data)
+    return await this.sha256(data)
   }
 
   async sha256(message) {

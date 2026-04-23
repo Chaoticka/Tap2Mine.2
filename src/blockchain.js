@@ -9,11 +9,16 @@ export class Blockchain {
   async init() {
     const stored = localStorage.getItem('tapmine-chain')
     if (stored) {
-      this.load(JSON.parse(stored))
+      try {
+        this.load(JSON.parse(stored))
+      } catch (e) {
+        console.error("Failed to parse stored chain", e)
+        localStorage.removeItem('tapmine-chain')
+      }
     }
   }
 
-  createGenesisBlock() {
+  async createGenesisBlock() {
     const genesis = {
       index: 0,
       type: 'genesis',
@@ -28,13 +33,13 @@ export class Blockchain {
       timestamp: Date.now(),
       hash: ''
     }
-    genesis.hash = this.calculateHash(genesis)
+    genesis.hash = await this.calculateHash(genesis)
     this.chain.push(genesis)
     localStorage.setItem('tapmine-chain', JSON.stringify(this.export()))
     return genesis
   }
 
-  calculateHash(block) {
+  async calculateHash(block) {
     const data = JSON.stringify({
       index: block.index,
       type: block.type,

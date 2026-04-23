@@ -41,7 +41,7 @@ class TapMineApp {
       this.state.chainLength = this.blockchain.getChainLength()
       this.state.balance = this.blockchain.getBalance()
     } else {
-      const genesis = this.blockchain.createGenesisBlock()
+      const genesis = await this.blockchain.createGenesisBlock()
       await this.driveStorage.saveChain(this.blockchain.export())
     }
     this.ui.updateChainDisplay(this.state)
@@ -53,7 +53,7 @@ class TapMineApp {
       this.ui.showNotification('Bot pattern detected!', 'error')
       return
     }
-    const success = this.blockchain.addBlock(blockData)
+    const success = await this.blockchain.addBlock(blockData)
     if (success) {
       this.state.balance = this.blockchain.getBalance()
       this.state.chainLength = this.blockchain.getChainLength()
@@ -110,10 +110,16 @@ class TapMineApp {
   }
 }
 
-document.addEventListener('DOMContentLoaded', () => {
+const initApp = () => {
   window.app = new TapMineApp()
   window.app.init()
-})
+}
+
+if (document.readyState === 'loading') {
+  document.addEventListener('DOMContentLoaded', initApp)
+} else {
+  initApp()
+}
 
 if ('serviceWorker' in navigator) {
   window.addEventListener('load', () => {
