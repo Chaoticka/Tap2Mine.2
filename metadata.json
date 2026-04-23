@@ -1,0 +1,6 @@
+{
+  "name": "Tap2Mine Deployment Automated Workflow",
+  "description": "Analyzes the Tap2Mine repository and provides a GitHub actions workflow for deployment.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
